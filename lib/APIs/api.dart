@@ -69,7 +69,16 @@ class SaavnAPI {
     preferredLanguages =
         preferredLanguages.map((lang) => lang.toLowerCase()).toList();
     final String languageHeader = 'L=${preferredLanguages.join('%2C')}';
-    headers = {'cookie': languageHeader, 'Accept': '*/*'};
+    headers = {
+      'cookie': languageHeader,
+      'Accept': 'application/json, text/plain, */*',
+      'Accept-Language': 'en-US,en;q=0.9',
+      'Origin': 'https://www.jiosaavn.com',
+      'Referer': 'https://www.jiosaavn.com/',
+      'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+      'X-Requested-With': 'XMLHttpRequest',
+    };
 
     if (useProxy && settingsBox.get('useProxy', defaultValue: false) as bool) {
       final String proxyIP =
@@ -83,7 +92,7 @@ class SaavnAPI {
       //     (X509Certificate cert, String host, int port) => Platform.isAndroid;
       // final IOClient myClient = IOClient(httpClient);
       // return myClient.get(url, headers: headers);
-      final proxyHeaders = headers;
+      final proxyHeaders = Map<String, String>.from(headers);
       proxyHeaders['X-FORWARDED-FOR'] = proxyIP;
       return get(url, headers: proxyHeaders).onError((error, stackTrace) {
         return Response(
